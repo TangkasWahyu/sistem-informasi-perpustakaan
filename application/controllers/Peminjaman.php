@@ -58,6 +58,23 @@ class Peminjaman extends MY_Controller {
         }
     }
 
+    public function cari_kode_buku_new()
+    {
+        //echo("get");
+        // //$kode_buku = 7611;
+        $kode_buku = $this->input->post('kode_buku');
+
+        $hasil = $this->Mod_buku->cekBukuNew($kode_buku);
+
+        echo json_encode($hasil->result());
+        // $hasil = $this->Mod_buku->cekBuku($kode_buku);
+        // //jika ada buku dalam database
+        // if($hasil->num_rows() > 0) {
+        //     $dbuku = $hasil->row_array();
+        //     echo $dbuku['judul']."|".$dbuku['pengarang'];
+        // }
+    }
+
     public function save_tmp()
     {
         // $kode = $this->Mod_peminjaman->getTransaksi()->result_array();

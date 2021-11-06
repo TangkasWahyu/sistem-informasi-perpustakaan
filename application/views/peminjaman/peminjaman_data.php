@@ -51,19 +51,25 @@
                         <div class="form-group">
                             <label class="col-lg-4 ">Nis</label>
                             <div class="col-lg-7">
-                                <select name="nis" class="form-control" id="nis">
+                                <!-- <select name="nis" class="form-control" id="nis">
                                     <option> </option>
                                     <?php foreach($anggota as $da): ?> 
                                     <option  value="<?php echo $da->nis ?>"><?php echo $da->nis ?></option>
                                     <?php endforeach; ?>
-                                </select>
+                                </select> -->
+
+                                <input type="text" name="nis-name" list="nis-list" id="nis">
+                                    <datalist id="nis-list">
+                                        <?php foreach($anggota as $da): ?> 
+                                            <option  value="<?php echo $da->nis ?>">- <?php echo $da->nama ?></option>
+                                        <?php endforeach; ?>
+                                    </datalist>
                             </div>
                         </div>
-                        
                         <div class="form-group">
                             <label class="col-lg-4 ">Nama Siswa</label>
                             <div class="col-lg-7">
-                                <input type="text" name="nama" id="nama" class="form-control">
+                                <input type="text" name="nama" id="nama" class="form-control" readonly="readonly">
                             </div>
                         </div>
                     </div>
@@ -81,7 +87,13 @@
                 <div class="form-inline">
                     <div class="form-group">
                         <label>Kode Buku</label>
-                        <input type="text" class="form-control"  id="kode_buku" >
+                        <!-- <input type="text" class="form-control"  id="kode_buku" > -->
+                        <input type="text" name="city" list="kode_buku_list" id="kode_buku">
+                        <datalist id="kode_buku_list">
+                         <!--  <option value="Boston">
+                          <option value="Cambridge"> -->
+
+                        </datalist>
                     </div>
                     <div class="form-group">
                         <label>Judul Buku</label>
@@ -95,10 +107,10 @@
                         <label class="sr-only">Pengarang</label>
                         <button id="tambah_buku" class="btn btn-primary"> Add Book <i class="glyphicon glyphicon-plus"></i></button>
                     </div>
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label class="sr-only">Pengarang</label>
                         <button id="cari" class="btn btn-success"> Search Book <i class="glyphicon glyphicon-search"></i></button>
-                    </div>
+                    </div> -->
                 </div>
                 <br /><br />
 
@@ -256,40 +268,58 @@ $(document).ready(function() {
        
     });
 
-
+var jsonData;
     //event keypress cari kode
-    $("#kode_buku").keypress(function(){
+    $("#kode_buku").keyup(function(){
         
         //13 adalah kode asci buat enter
-        if(event.which == 13) {
+        //if(event.which == 13) {
             var kode_buku = $("#kode_buku").val();
+            
 
             $.ajax({
-                url:"<?php echo site_url('peminjaman/cari_kode_buku');?>",
+                url:"<?php echo site_url('peminjaman/cari_kode_buku_new');?>",
                 type:"POST",
                 data:"kode_buku="+kode_buku,
                 cache:false,
                 success:function(hasil){
                 //split digunakan untuk memecah string    
-                   data = hasil.split("|");
-                   if(data==0) {
-                       alert("Buku " + kode_buku + " Book Not Found");
-                       $("#judul").val("");
-                       $("#pengarang").val("");
-                   }
-                   else{
-                       $("#judul").val(data[0]);
-                       $("#pengarang").val(data[1]);
-                       $("#tambah_buku").focus();
-                   }
+                   //data = hasil.split("|");
+                   //console.log(hasil);
+                   // if(data==0) {
+                   //     alert("Buku " + kode_buku + " Book Not Found");
+                   //     $("#judul").val("");
+                   //     $("#pengarang").val("");
+                   // }
+                   // else{
+                   //     $("#judul").val(data[0]);
+                   //     $("#pengarang").val(data[1]);
+                   //     $("#tambah_buku").focus();
+                   // }
 
-                   //console.log(data);
+                    jsonData = JSON.parse(hasil);
+                    var allData = "";
+                    for(var i=0; i<jsonData.length; i++){
+                        var dataRaw = '<option  value='+jsonData[i]["kode_buku"]+'>- '+jsonData[i]["judul"]+' - '+jsonData[i]["pengarang"]+'</option>';
+                        allData += dataRaw;
+                        //console.log(jsonData[i]);
+                    }
+                    console.log(allData);
+                    $("#kode_buku_list").html(allData);
                 }
             })
             
-        } 
+        //} 
 
     }) //end event keypress
+
+    $("#kode_buku").change(function(){
+        var index = jsonData.findIndex(x => x['kode_buku'] == $("#kode_buku").val());
+        if(index>=0){
+            $("#judul").val(jsonData[index]['judul']);
+            $("#pengarang").val(jsonData[index]['pengarang']);
+        }
+    })
 
     //tambah_buku ke tmp
     $("#tambah_buku").click(function(){
@@ -385,7 +415,26 @@ $(document).ready(function() {
     })
 
 
-  
+    
+
+    //search buku by code
+    // $("#kode_buku").keyup(function(){
+    //     var caribuku = $('#kode_buku').val();
+
+    //     console.log(caribuku);
+
+    //      $.ajax({
+    //         url:"<?php echo site_url('peminjaman/cari_buku');?>",
+    //         type:"POST",
+    //         data:"caribuku="+caribuku,
+    //         cache:false,
+    //         success:function(hasil){
+    //             $("#tampilbuku").html(hasil);
+                
+    //         }
+    //     })
+        
+    // })
 
 });
 </script>

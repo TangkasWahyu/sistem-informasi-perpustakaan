@@ -38,6 +38,20 @@ class Mod_buku extends CI_Model {
         return $this->db->get("buku");
     }
 
+    function cekBukuNew($kode_buku)
+    {
+        // $array = array('kode_buku' => $kode_buku, 'judul' => $kode_buku, 'pengarang' => $kode_buku);
+        // $this->db->like($array);
+        
+        $this->db->like('kode_buku', $kode_buku);
+        $this->db->or_like('judul', $kode_buku);
+        $this->db->or_like('pengarang', $kode_buku);
+
+
+        return $this->db->get("buku");
+    }
+
+
     function updateBuku($kode_buku, $data)
     {
         $this->db->where('kode_buku', $kode_buku);
