@@ -76,8 +76,9 @@ $query_builder = TRUE;
 $db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
-	'username' => 'ngoh1218_db_perpustakaan',
-	'password' => 'db_perpustakaan',
+	'username' => 'root',
+	'password' => '',
+	// db_perpustakaan
 	'database' => 'ngoh1218_db_perpustakaan',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
